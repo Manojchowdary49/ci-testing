@@ -1,23 +1,30 @@
+
 pipeline {
     agent any
 
     stages {
         stage('Install Dependencies') {
             steps {
-                bat 'python -m pip install pytest'
+                bat '"C:\\Users\\goran\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe" -m pip install pytest'
             }
         }
 
         stage('Run Tests') {
             steps {
-                bat 'python -m pytest -v --junitxml=test-results.xml'
+                bat '"C:\\Users\\goran\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe" -m pytest -v --junitxml=test-results.xml'
             }
         }
     }
 
     post {
         always {
-            junit 'test-results.xml'
+            script {
+                if (fileExists('test-results.xml')) {
+                    junit 'test-results.xml'
+                } else {
+                    echo 'Test report was not generated.'
+                }
+            }
         }
     }
 }
